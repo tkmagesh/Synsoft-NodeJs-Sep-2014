@@ -16,11 +16,7 @@ function isStatic(resourceName){
     });
 }
 
-function onConnectionHandle(req,res){
-    var urlObj = url.parse(req.url,true);
-    var pathname = urlObj.pathname;
-    if (pathname === "/")
-        pathname = "/index.html";
+function serveStatic(pathname, req, res){
     if (isStatic(pathname)){
         var fileName = path.join(__dirname,pathname );
         var fileFound = fs.existsSync(fileName);
@@ -31,14 +27,47 @@ function onConnectionHandle(req,res){
             res.statusCode = 404;
             res.end();
         }
-    } else if (pathname === "/calculator") {
-        if (req.method === "GET") {
-            var number1 = parseInt(urlObj.query.number1,10),
-                number2 = parseInt(urlObj.query.number2,10);
-            var result = calculator[urlObj.query.operation](number1,number2);
-            res.write("<h1>" + result + "</h1>");
-            res.end();
-        } else {
+    }
+}
+
+function parseData(req){
+    var urlObj = url.parse(req.url,true);
+    var req.pathname = urlObj.pathname;
+    if (req.pathname === "/")
+        req.pathname = "/index.html";
+    if (req.method === "GET"){
+        req.data = qs.query;
+    } else {
+        //handle the "POST"
+    }
+}
+
+function onConnectionHandle(req,res){
+
+    parseData(req);
+
+    if isStatic(req.pathname){
+        serveStatic(pathname, req, res);
+    }else if (req.pathname === "/calculator") {
+        var input = req.data
+        var number1 = parseInt(input.number1,10),
+            number2 = parseInt(input.number2,10);
+        var result = calculator[input.operation](number1,number2);
+        res.write("<h1>" + result + "</h1>");
+        res.end();
+
+    } else {
+        res.statusCode = 404;
+        res.end();
+    }
+}
+var server = http.createServer(onConnectionHandle);
+server.listen("8080");
+console.log("server running on port 8080");
+
+
+//handling post request
+/*else {
             var data = "";
             req.on("data",function(chunk){
                 data += chunk;
@@ -51,12 +80,4 @@ function onConnectionHandle(req,res){
                 res.write("<h1>" + result + "</h1>");
                 res.end();
             });
-        }
-    } else {
-        res.statusCode = 404;
-        res.end();
-    }
-}
-var server = http.createServer(onConnectionHandle);
-server.listen("8080");
-console.log("server running on port 8080");
+        }*/
