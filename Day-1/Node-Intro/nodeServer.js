@@ -1,7 +1,9 @@
 var http = require('http'),
     fs = require('fs'),
     url = require('url'),
-    path = require('path');
+    path = require('path'),
+    qs = require("querystring"),
+    calculator = require('./calculator.js');
 
 var staticResourceExtns = ['.html','.js','.css','.jpg','.png']
 String.prototype.endsWith = function(extn){
@@ -30,8 +32,26 @@ function onConnectionHandle(req,res){
             res.end();
         }
     } else if (pathname === "/calculator") {
-        res.write("calculator is being processed for " + JSON.stringify(urlObj.query));
-        res.end();
+        if (req.method === "GET") {
+            var number1 = parseInt(urlObj.query.number1,10),
+                number2 = parseInt(urlObj.query.number2,10);
+            var result = calculator[urlObj.query.operation](number1,number2);
+            res.write("<h1>" + result + "</h1>");
+            res.end();
+        } else {
+            var data = "";
+            req.on("data",function(chunk){
+                data += chunk;
+            });
+            req.on("end",function(){
+                var dataObj = qs.parse(data);
+                var number1 = parseInt(dataObj.number1,10),
+                    number2 = parseInt(dataObj.number2,10);
+                var result = calculator[dataObj.operation](number1,number2);
+                res.write("<h1>" + result + "</h1>");
+                res.end();
+            });
+        }
     } else {
         res.statusCode = 404;
         res.end();
