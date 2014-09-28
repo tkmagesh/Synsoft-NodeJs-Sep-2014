@@ -1,0 +1,15 @@
+h1{
+	border-top: 2px solid blue;
+	border-bottom: 2px solid blue;
+	background-color: lightblue;
+	padding: 10px;
+}
+label{
+	display : block;
+}
+.formfield{
+	margin-top: 5px;
+}
+.formfield > label{
+	font-weight: bold;
+}

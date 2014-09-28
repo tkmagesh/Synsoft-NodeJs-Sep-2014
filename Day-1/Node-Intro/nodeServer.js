@@ -5,7 +5,8 @@ var http = require('http'),
     qs = require("querystring"),
     calculator = require('./calculator.js');
 
-var staticResourceExtns = ['.html','.js','.css','.jpg','.png']
+var staticResourceExtns = ['.html','.js','.css','.jpg','.png'];
+
 String.prototype.endsWith = function(extn){
     return this.substr(this.length - extn.length) === extn;
 }
@@ -32,7 +33,7 @@ function serveStatic(pathname, req, res){
 
 function parseData(req){
     var urlObj = url.parse(req.url,true);
-    var req.pathname = urlObj.pathname;
+    req.pathname = urlObj.pathname;
     if (req.pathname === "/")
         req.pathname = "/index.html";
     if (req.method === "GET"){
@@ -46,7 +47,7 @@ function onConnectionHandle(req,res){
 
     parseData(req);
 
-    if isStatic(req.pathname){
+    if (isStatic(req.pathname)){
         serveStatic(pathname, req, res);
     }else if (req.pathname === "/calculator") {
         var input = req.data
