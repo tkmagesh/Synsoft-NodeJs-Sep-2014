@@ -1,0 +1,9 @@
+html
+    head
+        title Task Manager
+        link(rel="stylesheet", href="/stylesheets/style.css")
+    body
+        h1 Task Manager
+        ol
+            each task in tasks
+                li= task.name

@@ -1,0 +1,19 @@
+{
+  "name": "Node-Intro",
+  "version": "0.1.0",
+  "description": "a sample application for demonstrating node.js",
+  "main": "nodeServer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "demo",
+    "httpserver"
+  ],
+  "author": "Magesh K",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "colors": "~0.6.2",
+    "underscore": "~1.7.0"
+  }
+}

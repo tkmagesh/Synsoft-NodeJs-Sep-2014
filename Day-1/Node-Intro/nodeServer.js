@@ -32,12 +32,13 @@ function serveStatic(pathname, req, res){
 }
 
 function parseData(req){
+    console.log("parseData invoked");
     var urlObj = url.parse(req.url,true);
     req.pathname = urlObj.pathname;
     if (req.pathname === "/")
         req.pathname = "/index.html";
     if (req.method === "GET"){
-        req.data = qs.query;
+        req.data = urlObj.query;
     } else {
         //handle the "POST"
     }
@@ -46,11 +47,12 @@ function parseData(req){
 function onConnectionHandle(req,res){
 
     parseData(req);
-
+    console.log("req.data = ", req.data);
     if (isStatic(req.pathname)){
-        serveStatic(pathname, req, res);
+        serveStatic(req.pathname, req, res);
     }else if (req.pathname === "/calculator") {
-        var input = req.data
+        console.log(req.data);
+        var input = req.data;
         var number1 = parseInt(input.number1,10),
             number2 = parseInt(input.number2,10);
         var result = calculator[input.operation](number1,number2);
